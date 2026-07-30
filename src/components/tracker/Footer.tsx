@@ -3,6 +3,7 @@ import Link from 'next/link';
 const NAV = [
   { label: 'Home', href: '/' },
   { label: 'Full tracker', href: '/tracker' },
+  { label: 'Prep guide', href: '/prep' },
   { label: 'Report a case', href: '/zgloszenie' },
   { label: 'Privacy Policy', href: '/privacy' },
   { label: 'Terms of Use', href: '/terms' },
