@@ -34,10 +34,10 @@ export default function RoleChart({ data, total }: Props) {
     labels,
     legend: {
       position: 'bottom',
-      fontSize: '12px',
+      fontSize: '11px',
       labels: { colors: '#6B7280' },
-      markers: { size: 8 },
-      itemMargin: { horizontal: 6, vertical: 4 },
+      markers: { size: 6 },
+      itemMargin: { horizontal: 4, vertical: 3 },
     },
     dataLabels: { enabled: false },
     plotOptions: {

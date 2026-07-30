@@ -30,6 +30,11 @@ interface Props {
   reports: Report[];
 }
 
+function shortWeek(w: string) {
+  // "2026-W31" → "W31"
+  return w.replace(/^\d{4}-/, '');
+}
+
 export default function ScaleTab({ reports }: Props) {
   const [liveStats, setLiveStats] = useState(FALLBACK);
   const [weeklyDelta, setWeeklyDelta] = useState<WeeklyDelta | null>(null);
@@ -54,7 +59,7 @@ export default function ScaleTab({ reports }: Props) {
       .catch(() => {});
   }, []);
 
-  const totalPeople = reports.reduce((sum, r) => sum + (r.people_count ?? 1), 0);
+  const individualReports = reports.length;
 
   const industryData = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -106,7 +111,7 @@ export default function ScaleTab({ reports }: Props) {
           <Badge variant="light" color="light" size="sm">postAIjob + layoffs.fyi</Badge>
         </div>
         <div className="p-5 md:p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
             <div>
               <p className="text-xs font-semibold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest mb-2">
                 Personal reports
@@ -120,13 +125,13 @@ export default function ScaleTab({ reports }: Props) {
             </div>
             <div>
               <p className="text-xs font-semibold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest mb-2">
-                People affected
+                Individual reports
               </p>
               <p className="text-5xl font-bold text-gray-900 dark:text-white leading-none">
-                {totalPeople.toLocaleString('en-US')}
+                {individualReports}
               </p>
               <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
-                as reported in our cases
+                one person, one story
               </p>
             </div>
             <div>
@@ -173,7 +178,7 @@ export default function ScaleTab({ reports }: Props) {
               {/* This week */}
               <div>
                 <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">
-                  This week ({weeklyDelta.thisWeek})
+                  This week <span className="normal-case">({shortWeek(weeklyDelta.thisWeek)})</span>
                 </p>
                 <p className="text-3xl font-bold text-gray-900 dark:text-white leading-none">
                   {weeklyDelta.current.emp > 0 ? weeklyDelta.current.emp.toLocaleString('en-US') : '—'}
@@ -187,7 +192,7 @@ export default function ScaleTab({ reports }: Props) {
               {/* Last week */}
               <div>
                 <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">
-                  Last week ({weeklyDelta.lastWeek})
+                  Last week <span className="normal-case">({shortWeek(weeklyDelta.lastWeek)})</span>
                 </p>
                 <p className="text-3xl font-bold text-gray-900 dark:text-white leading-none">
                   {weeklyDelta.previous.emp > 0 ? weeklyDelta.previous.emp.toLocaleString('en-US') : '—'}
@@ -333,7 +338,7 @@ export default function ScaleTab({ reports }: Props) {
                 const pctShare = Math.round((count / maxCount) * 100);
                 return (
                   <div key={industry} className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 w-44 shrink-0 truncate">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 w-28 md:w-44 shrink-0 truncate">
                       {industry}
                     </span>
                     <div className="flex-1 h-2 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">

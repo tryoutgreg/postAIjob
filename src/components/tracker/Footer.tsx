@@ -24,7 +24,7 @@ export default function Footer() {
           <div className="sm:col-span-1">
             <Link href="/" className="inline-block">
               <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                postAIjob
+                postAIjob.org
               </span>
             </Link>
             <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs">

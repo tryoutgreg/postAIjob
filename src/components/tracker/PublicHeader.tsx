@@ -11,7 +11,7 @@ export default function PublicHeader({ cta }: Props) {
     <header className="sticky top-0 w-full bg-white/90 backdrop-blur border-b border-gray-100 z-50">
       <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3 lg:px-6 lg:py-4">
         <Link href="/" className="font-bold text-gray-900 text-lg tracking-tight">
-          postAIjob
+          postAIjob.org
         </Link>
 
         {cta && (

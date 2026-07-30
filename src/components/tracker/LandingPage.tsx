@@ -131,7 +131,7 @@ export default function LandingPage() {
                 </h1>
 
                 {heroStats && (
-                  <div className="mt-8 flex items-stretch gap-6">
+                  <div className="mt-8 flex flex-wrap items-stretch gap-x-6 gap-y-4">
                     <div>
                       <p className="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">
                         {heroStats.yearTotal.toLocaleString('en-US')}
@@ -146,7 +146,7 @@ export default function LandingPage() {
                         +{heroStats.weekEmp.toLocaleString('en-US')}
                       </p>
                       <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        last recorded week ({heroStats.weekLabel})
+                        last recorded week ({heroStats.weekLabel.replace(/^\d{4}-/, '')})
                       </p>
                     </div>
                   </div>
@@ -380,7 +380,7 @@ export default function LandingPage() {
                 <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600 text-white dark:bg-indigo-500 mx-auto mb-4">
                   <PieChartIcon className="size-6" />
                 </div>
-                <p className="text-lg font-bold text-gray-900 dark:text-white leading-snug">{topIndustry}</p>
+                <p className="text-lg font-bold text-gray-900 dark:text-white leading-snug line-clamp-2">{topIndustry}</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5">top industry</p>
               </div>
 
@@ -389,7 +389,7 @@ export default function LandingPage() {
                 <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600 text-white dark:bg-indigo-500 mx-auto mb-4">
                   <BoltIcon className="size-6" />
                 </div>
-                <p className="text-lg font-bold text-gray-900 dark:text-white leading-snug">{topTool}</p>
+                <p className="text-lg font-bold text-gray-900 dark:text-white leading-snug line-clamp-2">{topTool}</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5">top AI tool</p>
               </div>
             </div>
@@ -502,11 +502,11 @@ function RedditUrlCheckerInput() {
 
 function StatItem({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
   return (
-    <div>
+    <div className="min-w-0">
       <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-400">
         {icon}
       </div>
-      <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
+      <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white truncate">{value}</p>
       <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
     </div>
   );

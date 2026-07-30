@@ -53,7 +53,7 @@ export default function KpiCards({ reports }: Props) {
   const reportsTrend = computeTrend(reports, 'count');
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 md:gap-6 xl:grid-cols-4">
       <StatCard
         icon={<ListIcon className="size-6" />}
         label="Documented cases"
