@@ -10,6 +10,7 @@ import RedditUrlChecker from './RedditUrlChecker';
 import PublicHeader from './PublicHeader';
 import Footer from './Footer';
 import Badge from '@/components/ui/badge/Badge';
+import { normalizeIndustry, normalizeCountry } from '@/lib/normalize';
 import {
   ArrowRightIcon,
   ChatIcon,
@@ -85,15 +86,17 @@ export default function LandingPage() {
 
   const industryCounts: Record<string, number> = {};
   reports.forEach((r) => {
-    industryCounts[r.industry] = (industryCounts[r.industry] || 0) + 1;
+    const ind = normalizeIndustry(r.industry);
+    industryCounts[ind] = (industryCounts[ind] || 0) + 1;
   });
   const topIndustry = Object.entries(industryCounts).sort(([, a], [, b]) => b - a)[0]?.[0] ?? '—';
 
-  const aiToolCounts: Record<string, number> = {};
+  const countryCounts: Record<string, number> = {};
   reports.forEach((r) => {
-    if (r.ai_tool_replaced) aiToolCounts[r.ai_tool_replaced] = (aiToolCounts[r.ai_tool_replaced] || 0) + 1;
+    const c = normalizeCountry(r.country);
+    if (c) countryCounts[c] = (countryCounts[c] || 0) + 1;
   });
-  const topTool = Object.entries(aiToolCounts).sort(([, a], [, b]) => b - a)[0]?.[0] ?? '—';
+  const topCountry = Object.entries(countryCounts).sort(([, a], [, b]) => b - a)[0]?.[0] ?? '—';
 
   return (
     <>
@@ -186,7 +189,7 @@ export default function LandingPage() {
                     <StatItem icon={<IconDocument />} value={String(totalReports)} label="documented cases" />
                     <StatItem icon={<IconUsers />} value={String(uniqueCompanies)} label="unique companies" />
                     <StatItem icon={<IconChart />} value={topIndustry} label="top industry" />
-                    <StatItem icon={<IconBoltHero />} value={topTool} label="top AI tool" />
+                    <StatItem icon={<IconBoltHero />} value={topCountry} label="top country" />
                   </div>
 
                   <div className="mt-6 border-t border-indigo-100 pt-5 dark:border-indigo-900">
@@ -384,13 +387,13 @@ export default function LandingPage() {
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5">top industry</p>
               </div>
 
-              {/* Top narzędzie */}
+              {/* Top kraj */}
               <div className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-white p-5 shadow-xl shadow-indigo-500/5 dark:border-indigo-900 dark:from-indigo-950/40 dark:via-gray-900 dark:to-gray-900 text-center">
                 <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600 text-white dark:bg-indigo-500 mx-auto mb-4">
                   <BoltIcon className="size-6" />
                 </div>
-                <p className="text-lg font-bold text-gray-900 dark:text-white leading-snug line-clamp-2">{topTool}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5">top AI tool</p>
+                <p className="text-lg font-bold text-gray-900 dark:text-white leading-snug line-clamp-2">{topCountry}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5">top country</p>
               </div>
             </div>
 

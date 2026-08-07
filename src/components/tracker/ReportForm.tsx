@@ -165,6 +165,7 @@ type FormState = {
   layoff_year: string;
   ai_tool_replaced: string;
   next_step: string;
+  next_step_detail: string;
   severance_offered: string;
   free_text: string;
 };
@@ -191,7 +192,7 @@ export default function ReportForm({ onSuccess }: Props) {
   const [form, setForm] = useState<FormState>({
     company: '', country: '', company_size: '', state: '',
     industry: '', job_function: '', job_title: '', layoff_month: '', layoff_year: '',
-    ai_tool_replaced: '', next_step: '', severance_offered: '', free_text: '',
+    ai_tool_replaced: '', next_step: '', next_step_detail: '', severance_offered: '', free_text: '',
   });
 
   const set = (key: keyof FormState, value: string) =>
@@ -218,6 +219,7 @@ export default function ReportForm({ onSuccess }: Props) {
       layoff_date: `${form.layoff_year}-${form.layoff_month}`,
       ai_tool_replaced: form.ai_tool_replaced || null,
       next_step: form.next_step || null,
+      next_step_detail: form.next_step_detail || null,
       severance_offered: form.severance_offered === 'true' ? true : form.severance_offered === 'false' ? false : null,
       free_text: form.free_text || null,
       people_count: 1,
@@ -453,6 +455,22 @@ export default function ReportForm({ onSuccess }: Props) {
                 </select>
               </div>
             </div>
+            {['reskilling', 'pivoted_industry', 'new_job_same_field'].includes(form.next_step) && (
+              <div>
+                <label className={labelClass}>
+                  {form.next_step === 'reskilling'
+                    ? 'What are you learning / reskilling into?'
+                    : 'What role or field did you move to?'}
+                </label>
+                <input
+                  type="text"
+                  className={inputBase}
+                  placeholder="e.g. Data Science, UX Design, cybersecurity course"
+                  value={form.next_step_detail}
+                  onChange={(e) => set('next_step_detail', e.target.value)}
+                />
+              </div>
+            )}
           </div>
         )}
 

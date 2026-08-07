@@ -38,7 +38,7 @@ export default function ChartCard({ data }: Props) {
       toolbar: { show: false },
       animations: { enabled: false },
     },
-    colors: ['#4F46E5'],
+    colors: ['#465FFF'],
     stroke: { curve: 'smooth', width: 2 },
     fill: {
       type: 'gradient',

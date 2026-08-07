@@ -10,10 +10,10 @@ interface Props {
   total: number;
 }
 
-const VIOLET_PALETTE = [
-  '#7C3AED', '#8B5CF6', '#A78BFA', '#C4B5FD',
-  '#6D28D9', '#9333EA', '#A855F7', '#C084FC',
-  '#5B21B6', '#7E22CE',
+const BLUE_PALETTE = [
+  '#465FFF', '#6B7FFF', '#8B9FFF', '#ABBFFF',
+  '#3347CC', '#5A6FE6', '#7A8FFF', '#9AAFFF',
+  '#2233AA', '#4455DD',
 ];
 
 export default function RoleChart({ data, total }: Props) {
@@ -30,7 +30,7 @@ export default function RoleChart({ data, total }: Props) {
       fontFamily: 'Outfit, sans-serif',
       toolbar: { show: false },
     },
-    colors: VIOLET_PALETTE,
+    colors: BLUE_PALETTE,
     labels,
     legend: {
       position: 'bottom',

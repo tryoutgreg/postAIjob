@@ -18,7 +18,8 @@ function isAuthorized(req: NextRequest): boolean {
  * Agent reads Reddit posts via MCP, parses them, and sends here.
  */
 interface IngestReport {
-  source_url: string;
+  source_url: string;       // post URL or post URL + #commentId
+  comment_url?: string | null; // direct comment permalink (optional, more precise)
   subreddit: string;
   reddit_author: string;
   submission_id: string;
@@ -31,6 +32,7 @@ interface IngestReport {
   layoff_date: string; // YYYY-MM
   ai_tool_replaced: string;
   next_step: string;
+  next_step_detail?: string | null;
   severance_offered?: boolean | null;
   free_text?: string | null;
   people_count: number;
@@ -72,6 +74,7 @@ async function saveReport(report: IngestReport): Promise<'saved' | 'duplicate' |
     layoff_date: report.layoff_date,
     ai_tool_replaced: report.ai_tool_replaced || 'AI (unspecified)',
     next_step: report.next_step || 'unknown',
+    next_step_detail: report.next_step_detail || null,
     severance_offered: report.severance_offered ?? null,
     free_text: report.free_text || null,
     people_count: report.people_count || 1,
@@ -81,6 +84,7 @@ async function saveReport(report: IngestReport): Promise<'saved' | 'duplicate' |
   const fullRow = {
     ...coreRow,
     source_url: report.source_url,
+    comment_url: report.comment_url ?? null,
     reddit_author: report.reddit_author,
     submission_id: report.submission_id,
   };

@@ -9,8 +9,62 @@ const VectorMap = dynamic(
   { ssr: false },
 );
 
-const CODE_MAP: Record<string, string> = { UK: 'GB' };
-const normalizeCode = (code: string) => CODE_MAP[code] || code;
+// Maps raw country strings (names or codes) → ISO 3166-1 alpha-2 for jvectormap
+const TO_ISO: Record<string, string> = {
+  // codes
+  US: 'US', USA: 'US', UK: 'GB',
+  // full names
+  'United States': 'US',
+  'United Kingdom': 'GB',
+  'Vietnam': 'VN',
+  'Poland': 'PL',
+  'Germany': 'DE',
+  'France': 'FR',
+  'India': 'IN',
+  'Canada': 'CA',
+  'Australia': 'AU',
+  'Netherlands': 'NL',
+  'Brazil': 'BR',
+  'Spain': 'ES',
+  'Italy': 'IT',
+  'Sweden': 'SE',
+  'Portugal': 'PT',
+  'Philippines': 'PH',
+  'Singapore': 'SG',
+  'Japan': 'JP',
+  'South Korea': 'KR',
+  'Mexico': 'MX',
+  'Argentina': 'AR',
+  'Colombia': 'CO',
+  'South Africa': 'ZA',
+  'Nigeria': 'NG',
+  'Egypt': 'EG',
+  'Romania': 'RO',
+  'Czech Republic': 'CZ',
+  'Hungary': 'HU',
+  'Ukraine': 'UA',
+  'Russia': 'RU',
+  'Pakistan': 'PK',
+  'Bangladesh': 'BD',
+  'Indonesia': 'ID',
+  'Malaysia': 'MY',
+  'Thailand': 'TH',
+  'New Zealand': 'NZ',
+  'Ireland': 'IE',
+  'Denmark': 'DK',
+  'Finland': 'FI',
+  'Norway': 'NO',
+  'Switzerland': 'CH',
+  'Austria': 'AT',
+  'Belgium': 'BE',
+  'Israel': 'IL',
+  'Turkey': 'TR',
+  'UAE': 'AE',
+  'United Arab Emirates': 'AE',
+  'Saudi Arabia': 'SA',
+};
+
+const toIso = (raw: string): string => TO_ISO[raw] ?? raw;
 
 function lerpColor(a: string, b: string, t: number): string {
   const ah = parseInt(a.slice(1), 16);
@@ -43,7 +97,7 @@ export default function CountryMapTracker({ countryData, total }: Props) {
   const colorValues: Record<string, string> = {};
   countryData.forEach(([code, count]) => {
     if (code === 'Unknown') return;
-    colorValues[normalizeCode(code)] = getColor(count, maxCount);
+    colorValues[toIso(code)] = getColor(count, maxCount);
   });
 
   // Directly color SVG paths after render
@@ -83,7 +137,7 @@ export default function CountryMapTracker({ countryData, total }: Props) {
         zoomAnimate={true}
         zoomStep={1.5}
         onRegionTipShow={((e: any, el: any, code: string) => {
-          const count = countryData.find(([c]) => normalizeCode(c) === code)?.[1];
+          const count = countryData.find(([c]) => toIso(c) === code)?.[1];
           if (count) {
             const pct = Math.round((count / total) * 100);
             el.html(`<strong>${code}</strong>: ${count} reports (${pct}%)`);

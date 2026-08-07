@@ -4,6 +4,7 @@ import { useMemo, useEffect, useState } from 'react';
 import { Report } from './types';
 import Badge from '@/components/ui/badge/Badge';
 import CountryMapTracker from './CountryMapTracker';
+import { normalizeIndustry, normalizeCountry } from '@/lib/normalize';
 
 const LAYOFFS_FYI_AI_URL = 'https://layoffs.fyi/ai-layoffs/';
 const FALLBACK = {
@@ -59,12 +60,11 @@ export default function ScaleTab({ reports }: Props) {
       .catch(() => {});
   }, []);
 
-  const individualReports = reports.length;
-
   const industryData = useMemo(() => {
     const counts: Record<string, number> = {};
     reports.forEach((r) => {
-      counts[r.industry] = (counts[r.industry] || 0) + 1;
+      const ind = normalizeIndustry(r.industry);
+      counts[ind] = (counts[ind] || 0) + 1;
     });
     return Object.entries(counts)
       .sort(([, a], [, b]) => b - a)
@@ -74,7 +74,8 @@ export default function ScaleTab({ reports }: Props) {
   const countryData = useMemo(() => {
     const counts: Record<string, number> = {};
     reports.forEach((r) => {
-      counts[r.country] = (counts[r.country] || 0) + 1;
+      const c = normalizeCountry(r.country);
+      if (c) counts[c] = (counts[c] || 0) + 1;
     });
     return Object.entries(counts)
       .sort(([, a], [, b]) => b - a)
@@ -94,14 +95,7 @@ export default function ScaleTab({ reports }: Props) {
   }, [reports]);
 
   return (
-    <div className="space-y-8">
-      <div className="rounded-2xl border border-indigo-100 dark:border-indigo-900/50 bg-indigo-50/50 dark:bg-indigo-950/20 px-5 py-4">
-        <p className="text-sm text-indigo-700 dark:text-indigo-300 leading-relaxed">
-          This tab shows only aggregated data — no individual stories. The goal is to place the
-          phenomenon in a broader market context.
-        </p>
-      </div>
-
+    <div className="space-y-8 mt-12">
       {/* AI layoffs in context */}
       <div className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-white shadow-lg shadow-indigo-500/10 overflow-hidden dark:border-indigo-900/60 dark:from-indigo-950/40 dark:via-gray-900 dark:to-gray-900">
         <div className="px-5 py-4 border-b border-indigo-100/60 dark:border-indigo-900/40 flex items-center justify-between">
@@ -125,13 +119,13 @@ export default function ScaleTab({ reports }: Props) {
             </div>
             <div>
               <p className="text-xs font-semibold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest mb-2">
-                Individual reports
+                Industries hit
               </p>
               <p className="text-5xl font-bold text-gray-900 dark:text-white leading-none">
-                {individualReports}
+                {industryData.length}
               </p>
               <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
-                one person, one story
+                distinct sectors
               </p>
             </div>
             <div>
@@ -310,45 +304,6 @@ export default function ScaleTab({ reports }: Props) {
                     </div>
                     <span className="text-sm text-gray-500 dark:text-gray-400 w-20 text-right shrink-0">
                       {c.ai_emp > 0 ? c.ai_emp.toLocaleString('en-US') : '—'}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Breakdown by industry */}
-      {industryData.length > 0 && (
-        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] overflow-hidden">
-          <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-1 h-4 rounded-full bg-indigo-400 shrink-0" />
-              <h3 className="font-semibold text-gray-800 dark:text-white/90 text-sm">
-                Breakdown by industry
-              </h3>
-            </div>
-            <span className="text-xs text-gray-400 dark:text-gray-500">postAIjob reports</span>
-          </div>
-          <div className="p-5 md:p-6">
-            <div className="space-y-3">
-              {industryData.map(({ industry, count }) => {
-                const maxCount = industryData[0].count;
-                const pctShare = Math.round((count / maxCount) * 100);
-                return (
-                  <div key={industry} className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 w-28 md:w-44 shrink-0 truncate">
-                      {industry}
-                    </span>
-                    <div className="flex-1 h-2 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-indigo-500"
-                        style={{ width: `${pctShare}%` }}
-                      />
-                    </div>
-                    <span className="text-sm text-gray-500 dark:text-gray-400 w-8 text-right shrink-0">
-                      {count}
                     </span>
                   </div>
                 );

@@ -1,10 +1,11 @@
 import { Report } from './types';
+import { normalizeIndustry } from '@/lib/normalize';
 import StatCard from './StatCard';
 import {
   ListIcon,
   GroupIcon,
   PieChartIcon,
-  BoltIcon,
+  ChatIcon,
 } from '@/icons';
 
 interface Props {
@@ -33,7 +34,8 @@ export default function KpiCards({ reports }: Props) {
 
   const industryCounts: Record<string, number> = {};
   reports.forEach((r) => {
-    industryCounts[r.industry] = (industryCounts[r.industry] || 0) + 1;
+    const ind = normalizeIndustry(r.industry);
+    industryCounts[ind] = (industryCounts[ind] || 0) + 1;
   });
   const topIndustryEntry = Object.entries(industryCounts).sort(([, a], [, b]) => b - a)[0];
   const topIndustry = topIndustryEntry ? topIndustryEntry[0] : '—';
@@ -52,6 +54,10 @@ export default function KpiCards({ reports }: Props) {
 
   const reportsTrend = computeTrend(reports, 'count');
 
+  const threadsReviewed = new Set(
+    reports.map((r) => r.source_url).filter(Boolean)
+  ).size;
+
   return (
     <div className="grid grid-cols-2 gap-3 md:gap-6 xl:grid-cols-4">
       <StatCard
@@ -59,6 +65,13 @@ export default function KpiCards({ reports }: Props) {
         label="Documented cases"
         value={totalReports.toLocaleString('en-US')}
         trend={reportsTrend}
+      />
+      <StatCard
+        icon={<ChatIcon className="size-6" />}
+        label="Threads reviewed"
+        value={threadsReviewed.toLocaleString('en-US')}
+        sub="Reddit posts sourced"
+        trend={null}
       />
       <StatCard
         icon={<GroupIcon className="size-6" />}
@@ -71,13 +84,6 @@ export default function KpiCards({ reports }: Props) {
         label="Top industry"
         value={topIndustry}
         sub={topIndustryCount > 0 ? `${topIndustryCount} reports` : undefined}
-        trend={null}
-      />
-      <StatCard
-        icon={<BoltIcon className="size-6" />}
-        label="Top AI tool"
-        value={topTool}
-        sub={topToolCount > 0 ? `${topToolCount}× reported` : undefined}
         trend={null}
       />
     </div>
