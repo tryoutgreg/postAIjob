@@ -283,6 +283,22 @@ export function nextStepLabel(step: NormalizedNextStep): string {
   return NEXT_STEP_DISPLAY[step] ?? step;
 }
 
+// ── seniority normalizer ────────────────────────────────────────────
+
+export type SeniorityLevel = 'Senior' | 'Mid' | 'Junior / Entry' | 'Unknown';
+
+export function classifySeniority(raw: string | null | undefined): SeniorityLevel {
+  if (!raw) return 'Unknown';
+  const s = raw.trim();
+  if (!s || /^unknown$/i.test(s) || /^various$/i.test(s)) return 'Unknown';
+
+  if (/\bsenior\b|\blead\b|\bprincipal\b|\bstaff eng|\bdirector\b|\bhead of\b|\bvp\b|\bchief\b/i.test(s)) return 'Senior';
+  if (/junior|jr\.?|entry.level|intern\b|trainee|graduate/i.test(s)) return 'Junior / Entry';
+  if (/mid|middle/i.test(s)) return 'Mid';
+
+  return 'Unknown';
+}
+
 export function normalizeCountry(raw: string | null | undefined): string | null {
   if (!raw) return null;
   const s = raw.trim();

@@ -14,6 +14,8 @@ import ScaleTab from './ScaleTab';
 import RoleChart from './RoleChart';
 
 import NextStepChart from './NextStepChart';
+import SeniorityChart from './SeniorityChart';
+import NewDirectionsChart from './NewDirectionsChart';
 import RedditUrlChecker from './RedditUrlChecker';
 import PublicHeader from './PublicHeader';
 import Footer from './Footer';
@@ -172,8 +174,14 @@ export default function TrackerApp() {
 
         {/* Breakdown by industry — hidden until industry data is cleaned up (currently reflects role/dept, not company industry) */}
 
+        {/* Seniority level — hidden until we have more explicit data */}
+        {/* <SeniorityChart reports={filteredReports} /> */}
+
         {/* What people did next */}
         <NextStepChart reports={filteredReports} />
+
+        {/* New directions — pivots, reskilling, business */}
+        <NewDirectionsChart reports={filteredReports} />
 
         {/* Reddit URL checker */}
         <RedditUrlChecker />

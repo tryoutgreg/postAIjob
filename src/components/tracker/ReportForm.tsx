@@ -153,6 +153,15 @@ interface Props {
   onSuccess?: () => void;
 }
 
+const SENIORITY_LEVELS = [
+  { value: 'junior', label: 'Junior / Entry level' },
+  { value: 'mid', label: 'Mid-level' },
+  { value: 'senior', label: 'Senior' },
+  { value: 'lead', label: 'Lead / Principal' },
+  { value: 'manager', label: 'Manager / Director' },
+  { value: 'unknown', label: 'Prefer not to say' },
+];
+
 type FormState = {
   company: string;
   country: string;
@@ -161,6 +170,7 @@ type FormState = {
   industry: string;
   job_function: string;
   job_title: string;
+  seniority_level: string;
   layoff_month: string;
   layoff_year: string;
   ai_tool_replaced: string;
@@ -191,7 +201,7 @@ export default function ReportForm({ onSuccess }: Props) {
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState<FormState>({
     company: '', country: '', company_size: '', state: '',
-    industry: '', job_function: '', job_title: '', layoff_month: '', layoff_year: '',
+    industry: '', job_function: '', job_title: '', seniority_level: '', layoff_month: '', layoff_year: '',
     ai_tool_replaced: '', next_step: '', next_step_detail: '', severance_offered: '', free_text: '',
   });
 
@@ -216,6 +226,7 @@ export default function ReportForm({ onSuccess }: Props) {
       industry: form.industry,
       job_function: form.job_function || null,
       job_title: form.job_title || null,
+      seniority_level: form.seniority_level && form.seniority_level !== 'unknown' ? form.seniority_level : null,
       layoff_date: `${form.layoff_year}-${form.layoff_month}`,
       ai_tool_replaced: form.ai_tool_replaced || null,
       next_step: form.next_step || null,
@@ -381,15 +392,28 @@ export default function ReportForm({ onSuccess }: Props) {
                 </select>
               </div>
             </div>
-            <div>
-              <label className={labelClass}>Job title</label>
-              <input
-                type="text"
-                className={inputBase}
-                placeholder="e.g. Senior Software Engineer"
-                value={form.job_title}
-                onChange={(e) => set('job_title', e.target.value)}
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>Job title</label>
+                <input
+                  type="text"
+                  className={inputBase}
+                  placeholder="e.g. Software Engineer"
+                  value={form.job_title}
+                  onChange={(e) => set('job_title', e.target.value)}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Seniority level</label>
+                <select
+                  className={inputBase}
+                  value={form.seniority_level}
+                  onChange={(e) => set('seniority_level', e.target.value)}
+                >
+                  <option value="">Select…</option>
+                  {SENIORITY_LEVELS.map((l) => <option key={l.value} value={l.value}>{l.label}</option>)}
+                </select>
+              </div>
             </div>
             <div>
               <label className={labelClass}>Month and year of layoff *</label>
