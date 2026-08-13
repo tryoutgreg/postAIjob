@@ -19,7 +19,11 @@ function formatMonth(ym: string) {
 }
 
 export default function ChartCard({ data }: Props) {
-  const filteredData = useMemo(() => data.filter((d) => d.month >= '2024-01'), [data]);
+  const filteredData = useMemo(() => {
+    const now = new Date();
+    const oneYearAgo = `${now.getFullYear() - 1}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    return data.filter((d) => d.month >= oneYearAgo);
+  }, [data]);
 
   const { currentCount, changePercent, isPositive } = useMemo(() => {
     if (filteredData.length === 0) return { currentCount: 0, changePercent: 0, isPositive: false };
@@ -36,6 +40,8 @@ export default function ChartCard({ data }: Props) {
       type: 'area',
       height: 240,
       toolbar: { show: false },
+      zoom: { enabled: false },
+      selection: { enabled: false },
       animations: { enabled: false },
     },
     colors: ['#465FFF'],

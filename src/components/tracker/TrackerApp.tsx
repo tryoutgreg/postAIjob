@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { normalizeIndustry } from '@/lib/normalize';
+import { normalizeIndustry, classifyRole } from '@/lib/normalize';
 import { Report } from './types';
 import KpiCards from './KpiCards';
 import SourceFilter from './SourceFilter';
@@ -12,7 +12,7 @@ import ChartCard from './ChartCard';
 import StoriesCard from './StoriesCard';
 import ScaleTab from './ScaleTab';
 import RoleChart from './RoleChart';
-import JobTitleChart from './JobTitleChart';
+
 import NextStepChart from './NextStepChart';
 import RedditUrlChecker from './RedditUrlChecker';
 import PublicHeader from './PublicHeader';
@@ -62,39 +62,16 @@ export default function TrackerApp() {
   }, [filteredReports]);
 
   const roleData = useMemo(() => {
-    const counts: Record<string, number> = {};
+    const result: Record<string, { total: number; subs: Record<string, number> }> = {};
     filteredReports.forEach((r) => {
-      const raw = r.job_function || r.job_title || '';
+      const raw = r.job_title || '';
       if (!raw) return;
-      let category = 'Other';
-      if (/software|engineer|dev(eloper)?|coding|programm|frontend|backend|fullstack|sre|devops|qa\b|tester/i.test(raw)) category = 'Software Engineering';
-      else if (/product design|ux\b|ui\b|user experience|user interface|figma/i.test(raw)) category = 'UX / Product Design';
-      else if (/product manager|product owner|\bpm\b|\bpo\b/i.test(raw)) category = 'Product Management';
-      else if (/data analys|data scien|analyst|analytics|\bbi\b|business intelligence/i.test(raw)) category = 'Data & Analytics';
-      else if (/content|writer|copywriter|editor|journalist|author|blogger|media/i.test(raw)) category = 'Content & Writing';
-      else if (/market|seo|social media|digital market|brand|growth/i.test(raw)) category = 'Marketing';
-      else if (/translat|linguist/i.test(raw)) category = 'Translation';
-      else if (/graphic|creative|art director|illustrat/i.test(raw)) category = 'Graphic / Creative';
-      else if (/account(?!.*exec)|financ|banking|credit|tax|audit/i.test(raw)) category = 'Finance & Accounting';
-      else if (/sales|account executive|business dev/i.test(raw)) category = 'Sales';
-      else if (/customer|support|helpdesk/i.test(raw)) category = 'Customer Support';
-      else if (/clerical|admin|operat|office|secretary/i.test(raw)) category = 'Admin / Operations';
-      else if (/legal|paralegal|attorney|lawyer/i.test(raw)) category = 'Legal';
-      counts[category] = (counts[category] || 0) + 1;
+      const { category, subcategory } = classifyRole(raw);
+      if (!result[category]) result[category] = { total: 0, subs: {} };
+      result[category].total++;
+      result[category].subs[subcategory] = (result[category].subs[subcategory] || 0) + 1;
     });
-    return Object.entries(counts).sort(([, a], [, b]) => b - a);
-  }, [filteredReports]);
-
-  const jobTitleData = useMemo(() => {
-    const counts: Record<string, number> = {};
-    filteredReports.forEach((r) => {
-      const title = (r.job_title || '').trim();
-      if (!title || title === 'Unknown') return;
-      // Normalize casing: capitalize first letter of each word
-      const normalized = title.replace(/\b\w/g, (c) => c.toUpperCase());
-      counts[normalized] = (counts[normalized] || 0) + 1;
-    });
-    return Object.entries(counts).sort(([, a], [, b]) => b - a);
+    return result;
   }, [filteredReports]);
 
   const industryData = useMemo(() => {
@@ -169,20 +146,19 @@ export default function TrackerApp() {
         <ChartCard data={trendData} />
 
         {/* Breakdown by role */}
-        {roleData.length > 0 && (
+        {Object.keys(roleData).length > 0 && (
           <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] overflow-hidden">
             <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="w-1 h-4 rounded-full bg-indigo-400 shrink-0" />
                 <h3 className="font-semibold text-gray-800 dark:text-white/90 text-sm">
-                  Breakdown by role
+                  Most reported roles
                 </h3>
               </div>
-              <span className="text-xs text-gray-400 dark:text-gray-500">postAIjob reports</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">based on {filteredReports.length} reports</span>
             </div>
             <div className="p-5 md:p-6">
               <RoleChart data={roleData} total={filteredReports.length} />
-              <JobTitleChart data={jobTitleData} />
             </div>
           </div>
         )}
@@ -194,44 +170,7 @@ export default function TrackerApp() {
             onSelect={(sub) => setSelectedSubreddit((prev) => (prev === sub ? null : sub))}
           /> */}
 
-        {/* Breakdown by industry */}
-        {industryData.length > 0 && (
-          <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] overflow-hidden">
-            <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-1 h-4 rounded-full bg-indigo-400 shrink-0" />
-                <h3 className="font-semibold text-gray-800 dark:text-white/90 text-sm">
-                  Breakdown by industry
-                </h3>
-              </div>
-              <span className="text-xs text-gray-400 dark:text-gray-500">postAIjob reports</span>
-            </div>
-            <div className="p-5 md:p-6">
-              <div className="space-y-3">
-                {industryData.map(({ industry, count }) => {
-                  const maxCount = industryData[0].count;
-                  const pctShare = Math.round((count / maxCount) * 100);
-                  return (
-                    <div key={industry} className="flex items-center gap-3">
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300 w-28 md:w-44 shrink-0 truncate">
-                        {industry}
-                      </span>
-                      <div className="flex-1 h-2 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-indigo-500"
-                          style={{ width: `${pctShare}%` }}
-                        />
-                      </div>
-                      <span className="text-sm text-gray-500 dark:text-gray-400 w-8 text-right shrink-0">
-                        {count}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Breakdown by industry — hidden until industry data is cleaned up (currently reflects role/dept, not company industry) */}
 
         {/* What people did next */}
         <NextStepChart reports={filteredReports} />

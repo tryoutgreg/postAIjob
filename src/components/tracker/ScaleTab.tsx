@@ -106,7 +106,7 @@ export default function ScaleTab({ reports }: Props) {
         </div>
         <div className="p-5 md:p-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
-            <div>
+            <div className="text-center sm:text-left">
               <p className="text-xs font-semibold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest mb-2">
                 Personal reports
               </p>
@@ -117,7 +117,7 @@ export default function ScaleTab({ reports }: Props) {
                 real stories collected
               </p>
             </div>
-            <div>
+            <div className="text-center sm:text-left">
               <p className="text-xs font-semibold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest mb-2">
                 Industries hit
               </p>
@@ -128,7 +128,7 @@ export default function ScaleTab({ reports }: Props) {
                 distinct sectors
               </p>
             </div>
-            <div>
+            <div className="text-center sm:text-left">
               <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">
                 Market total
               </p>
@@ -323,12 +323,13 @@ export default function ScaleTab({ reports }: Props) {
             </h3>
           </div>
           <div className="px-4 py-6 mx-5 my-5 md:mx-6 overflow-hidden border border-gray-200 rounded-2xl bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
-            <CountryMapTracker countryData={countryData} total={reports.length} />
+            <CountryMapTracker countryData={countryData} total={countryData.reduce((s, [, n]) => s + n, 0)} />
           </div>
           <div className="px-5 pb-5 md:px-6 md:pb-6">
             <div className="space-y-4">
               {countryData.map(([country, count]) => {
-                const pctShare = Math.round((count / reports.length) * 100);
+                const knownTotal = countryData.reduce((s, [, n]) => s + n, 0);
+                const pctShare = Math.round((count / knownTotal) * 100);
                 return (
                   <div key={country} className="flex items-center justify-between">
                     <span className="text-sm font-semibold text-gray-800 dark:text-white/90 w-16 shrink-0">

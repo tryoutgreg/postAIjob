@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import { Outfit } from 'next/font/google';
 import './globals.css';
 import "flatpickr/dist/flatpickr.css";
@@ -10,6 +11,22 @@ const outfit = Outfit({
   subsets: ["latin"],
 });
 
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'postAIjob',
+  url: 'https://postaijob.org',
+  description:
+    'A public tracker of AI-driven layoffs. Real stories from Reddit and anonymous submissions.',
+  publisher: {
+    '@type': 'Organization',
+    name: 'postAIjob',
+    url: 'https://postaijob.org',
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -17,6 +34,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        {GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga-init" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
+            </Script>
+          </>
+        )}
+      </head>
       <body className={`${outfit.className} dark:bg-gray-900`}>
         <ThemeProvider>
           <SidebarProvider>{children}</SidebarProvider>
