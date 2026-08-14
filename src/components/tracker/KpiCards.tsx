@@ -65,6 +65,7 @@ export default function KpiCards({ reports }: Props) {
         label="Documented cases"
         value={totalReports.toLocaleString('en-US')}
         trend={reportsTrend}
+        iconColor="#465FFF"
       />
       <StatCard
         icon={<ChatIcon className="size-6" />}
@@ -72,12 +73,14 @@ export default function KpiCards({ reports }: Props) {
         value={threadsReviewed.toLocaleString('en-US')}
         sub="Reddit posts sourced"
         trend={null}
+        iconColor="#10B981"
       />
       <StatCard
         icon={<GroupIcon className="size-6" />}
         label="Unique companies"
         value={uniqueCompanies.toLocaleString('en-US')}
         trend={null}
+        iconColor="#F59E0B"
       />
       <StatCard
         icon={<PieChartIcon className="size-6" />}
@@ -85,6 +88,7 @@ export default function KpiCards({ reports }: Props) {
         value={topIndustry}
         sub={topIndustryCount > 0 ? `${topIndustryCount} reports` : undefined}
         trend={null}
+        iconColor="#EF4444"
       />
     </div>
   );

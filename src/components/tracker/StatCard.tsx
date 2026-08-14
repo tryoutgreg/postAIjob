@@ -7,13 +7,16 @@ interface Props {
   value: string;
   sub?: string;
   trend?: { pct: number; up: boolean } | null;
+  iconColor?: string;
 }
 
-export default function StatCard({ icon, label, value, sub, trend }: Props) {
+export default function StatCard({ icon, label, value, sub, trend, iconColor }: Props) {
   return (
     <div className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-white p-4 shadow-xl shadow-indigo-500/5 dark:border-indigo-900 dark:from-indigo-950/40 dark:via-gray-900 dark:to-gray-900 md:p-6">
-      {/* Ikona — pełny kolor jak w Solid SingleFeature */}
-      <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl bg-indigo-600 text-white dark:bg-indigo-500">
+      <div
+        className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl text-white"
+        style={{ backgroundColor: iconColor || '#465FFF' }}
+      >
         {icon}
       </div>
 
