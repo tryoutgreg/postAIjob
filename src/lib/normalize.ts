@@ -1,18 +1,16 @@
 export function normalizeIndustry(raw: string | null | undefined): string {
   if (!raw) return 'Other';
   const s = raw.trim();
-  if (/tech|software|\bIT\b|information tech|IndiaTech/i.test(s)) return 'Technology';
-  if (/media.*market|market.*media|digital market|marketing/i.test(s)) return 'Marketing & Media';
-  if (/media|journalism|publishing|broadcast/i.test(s)) return 'Marketing & Media';
+  if (/tech|software|\bIT\b|information tech|devops|qa\b|testing|engineering/i.test(s)) return 'Tech';
+  if (/media|market|journalism|publishing|broadcast|content|entertainment|advertising/i.test(s)) return 'Media & Marketing';
   if (/finance|banking|credit|fintech|accounting|insurance/i.test(s)) return 'Finance';
   if (/health|medical|pharma|clinical|biotech/i.test(s)) return 'Healthcare';
-  if (/legal|law\b|paralegal/i.test(s)) return 'Legal';
-  if (/bpo|outsourc|services/i.test(s)) return 'BPO / Services';
-  if (/translat|linguist/i.test(s)) return 'Translation';
-  if (/design|ux\b|ui\b|creative/i.test(s)) return 'Design';
-  if (/retail|e-?comm|ecommerce/i.test(s)) return 'Retail / E-commerce';
   if (/education|academ|university|school/i.test(s)) return 'Education';
-  if (/gaming/i.test(s)) return 'Gaming';
+  if (/legal|law\b|paralegal/i.test(s)) return 'Legal';
+  if (/bpo|outsourc|services|translat|linguist/i.test(s)) return 'BPO & Services';
+  if (/retail|e-?comm|ecommerce/i.test(s)) return 'Retail & E-commerce';
+  if (/manufactur/i.test(s)) return 'Manufacturing';
+  if (/consult/i.test(s)) return 'Consulting';
   if (/other|unknown|undisclosed/i.test(s)) return 'Other';
   return s;
 }

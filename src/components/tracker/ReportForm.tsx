@@ -33,25 +33,16 @@ const JOB_FUNCTIONS = [
 ];
 
 const INDUSTRIES = [
-  // Tech subcategories (replaces "Tech/IT")
-  'Software Engineering',
-  'QA / Testing',
-  'DevOps / Infrastructure',
-  'Technical Writing',
-  'Product & UX Design',
-  'Data & Analytics',
-  'IT Operations',
-  // Other sectors
+  'Tech',
+  'Media & Marketing',
   'Finance',
   'Healthcare',
   'Education',
-  'Media/Marketing',
-  'Retail',
+  'Legal',
+  'BPO & Services',
+  'Retail & E-commerce',
   'Manufacturing',
   'Consulting',
-  'Legal',
-  'BPO/Services',
-  'E-commerce',
   'Other',
 ];
 
