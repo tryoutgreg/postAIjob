@@ -1,14 +1,16 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { Report } from './types';
+import { trackEvent } from '@/lib/analytics';
 import PublicHeader from './PublicHeader';
 import Footer from './Footer';
 
 export default function PrepPage() {
   const [reports, setReports] = useState<Report[]>([]);
+  const scrollMilestones = useRef(new Set<number>());
 
   useEffect(() => {
     supabase
@@ -16,6 +18,24 @@ export default function PrepPage() {
       .select('*')
       .then(({ data }) => setReports((data as Report[]) ?? []));
   }, []);
+
+  const handleScroll = useCallback(() => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (docHeight <= 0) return;
+    const pct = Math.round((scrollTop / docHeight) * 100);
+    [25, 50, 75, 100].forEach((milestone) => {
+      if (pct >= milestone && !scrollMilestones.current.has(milestone)) {
+        scrollMilestones.current.add(milestone);
+        trackEvent('prep_scroll_depth', { event_category: 'engagement', depth: milestone });
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
   const topTools = useMemo(() => {
     const counts: Record<string, number> = {};

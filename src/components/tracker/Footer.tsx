@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { trackEvent } from '@/lib/analytics';
 
 const NAV = [
   { label: 'Home', href: '/' },
@@ -71,6 +74,7 @@ export default function Footer() {
                       href={l.href}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackEvent('outbound_click', { event_category: 'engagement', event_label: l.label })}
                       className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                     >
                       {l.label}

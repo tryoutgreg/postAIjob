@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { ApexOptions } from 'apexcharts';
+import { trackEvent } from '@/lib/analytics';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -91,7 +92,12 @@ export default function RoleChart({ data, total }: Props) {
           return (
             <div key={cat}>
               <button
-                onClick={() => hasMultipleSubs && setExpanded(isExpanded ? null : cat)}
+                onClick={() => {
+                  if (hasMultipleSubs) {
+                    if (!isExpanded) trackEvent('role_chart_drilldown', { event_category: 'engagement', event_label: cat });
+                    setExpanded(isExpanded ? null : cat);
+                  }
+                }}
                 className={`w-full flex items-center gap-3 py-1.5 ${hasMultipleSubs ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg px-2 -mx-2' : 'cursor-default'}`}
               >
                 <span

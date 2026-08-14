@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Report } from './types';
 import { normalizeNextStep, nextStepLabel, NormalizedNextStep } from '@/lib/normalize';
+import { trackEvent } from '@/lib/analytics';
 
 const PAGE_SIZE = 8;
 
@@ -128,7 +129,7 @@ export default function NextStepChart({ reports }: Props) {
             {transitions.length > visibleCount && (
               <div className="mt-8 text-center">
                 <button
-                  onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+                  onClick={() => { trackEvent('show_more_transitions', { event_category: 'engagement' }); setVisibleCount((c) => c + PAGE_SIZE); }}
                   className="px-12 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors shadow-sm"
                 >
                   Show more ({transitions.length - visibleCount})

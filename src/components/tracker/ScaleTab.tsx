@@ -5,6 +5,7 @@ import { Report } from './types';
 import Badge from '@/components/ui/badge/Badge';
 import CountryMapTracker from './CountryMapTracker';
 import { normalizeIndustry, normalizeCountry } from '@/lib/normalize';
+import { trackEvent } from '@/lib/analytics';
 
 const LAYOFFS_FYI_AI_URL = 'https://layoffs.fyi/ai-layoffs/';
 const FALLBACK = {
@@ -146,6 +147,7 @@ export default function ScaleTab({ reports }: Props) {
               href={LAYOFFS_FYI_AI_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackEvent('outbound_click', { event_category: 'engagement', event_label: 'layoffs.fyi' })}
               className="underline hover:text-gray-600 dark:hover:text-gray-300"
             >
               layoffs.fyi/ai-layoffs

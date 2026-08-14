@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeftIcon } from '@/icons';
+import { trackEvent } from '@/lib/analytics';
 
 // ─── Dane stałe ──────────────────────────────────────────────────────────────
 
@@ -199,6 +200,10 @@ function isStepValid(step: number, form: FormState): boolean {
 export default function ReportForm({ onSuccess }: Props) {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    trackEvent('form_start', { event_category: 'form' });
+  }, []);
   const [form, setForm] = useState<FormState>({
     company: '', country: '', company_size: '', state: '',
     industry: '', job_function: '', job_title: '', seniority_level: '', layoff_month: '', layoff_year: '',
@@ -209,7 +214,11 @@ export default function ReportForm({ onSuccess }: Props) {
     setForm((f) => ({ ...f, [key]: value }));
 
   const handleNext = () => {
-    if (isStepValid(step, form)) setStep((s) => Math.min(s + 1, STEPS.length - 1));
+    if (isStepValid(step, form)) {
+      const nextStep = step + 1;
+      trackEvent(`form_step_${nextStep + 1}`, { event_category: 'form', step_name: STEPS[nextStep].title });
+      setStep(Math.min(nextStep, STEPS.length - 1));
+    }
   };
 
   const handleBack = () => setStep((s) => Math.max(s - 1, 0));
@@ -235,6 +244,7 @@ export default function ReportForm({ onSuccess }: Props) {
       free_text: form.free_text || null,
       people_count: 1,
     });
+    trackEvent('form_submit', { event_category: 'form' });
     setSubmitted(true);
     onSuccess?.();
   };
