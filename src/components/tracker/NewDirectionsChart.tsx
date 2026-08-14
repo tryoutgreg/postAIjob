@@ -11,7 +11,7 @@ interface Props {
   reports: Report[];
 }
 
-const RELEVANT_STEPS: NormalizedNextStep[] = ['pivoted_industry', 'reskilling', 'started_business'];
+const RELEVANT_STEPS: NormalizedNextStep[] = ['pivoted_industry', 'reskilling', 'started_business', 'freelance'];
 
 const PALETTE = [
   '#465FFF', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6',
@@ -21,17 +21,18 @@ const PALETTE = [
 function classifyDirection(detail: string): string {
   const s = detail.toLowerCase();
 
-  if (/design|ux|ui|figma|creative/i.test(s)) return 'Design';
+  if (/design|ux|ui|figma|creative/i.test(s)) return 'Design & UX';
   if (/code|coding|software|dev|programming|web dev/i.test(s)) return 'Software / Tech';
   if (/data|analytics|data sci/i.test(s)) return 'Data & Analytics';
   if (/content|seo|marketing|copywriting|strategy/i.test(s)) return 'Content & Marketing';
   if (/media|video|photo|film|production/i.test(s)) return 'Media & Production';
   if (/business|llc|entrepreneur|startup|company/i.test(s)) return 'Own Business';
   if (/teach|education|tutor|instructor/i.test(s)) return 'Education';
-  if (/trade|plumb|electric|mechanic|construction|manual/i.test(s)) return 'Trades';
-  if (/retail|store|service|hospitality|food/i.test(s)) return 'Retail & Service';
+  if (/trade|plumb|electric|mechanic|construction|manual/i.test(s)) return 'Trades & Construction';
+  if (/retail|store|service|hospitality|food/i.test(s)) return 'Retail & Hospitality';
   if (/health|nurse|medical|clinic/i.test(s)) return 'Healthcare';
   if (/consult|freelanc|contract/i.test(s)) return 'Freelance / Consulting';
+  if (/financ|accounting|bank/i.test(s)) return 'Finance';
 
   return 'Other';
 }
@@ -43,8 +44,12 @@ export default function NewDirectionsChart({ reports }: Props) {
   reports.forEach((r) => {
     const step = normalizeNextStep(r.next_step);
     if (!RELEVANT_STEPS.includes(step)) return;
-    if (!r.next_step_detail?.trim()) return;
-    const direction = classifyDirection(r.next_step_detail);
+
+    // Prefer clean dropdown data, fall back to regex on freeform text
+    const direction = r.next_step_industry?.trim()
+      || (r.next_step_detail?.trim() ? classifyDirection(r.next_step_detail) : null);
+    if (!direction) return;
+
     counts[direction] = (counts[direction] || 0) + 1;
     total++;
   });

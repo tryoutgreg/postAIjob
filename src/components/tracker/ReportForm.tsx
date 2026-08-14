@@ -105,6 +105,22 @@ const NEXT_STEPS = [
   { value: 'unknown', label: 'Not sure yet' },
 ];
 
+const NEXT_STEP_INDUSTRIES = [
+  'Software / Tech',
+  'Data & Analytics',
+  'Design & UX',
+  'Content & Marketing',
+  'Media & Production',
+  'Education',
+  'Healthcare',
+  'Finance',
+  'Trades & Construction',
+  'Retail & Hospitality',
+  'Freelance / Consulting',
+  'Own Business',
+  'Other',
+];
+
 const COMPANY_SIZES = [
   { value: 'startup', label: 'Startup (< 50 people)' },
   { value: 'small_51_200', label: 'Small (51–200 people)' },
@@ -177,6 +193,7 @@ type FormState = {
   ai_tool_replaced: string;
   next_step: string;
   next_step_detail: string;
+  next_step_industry: string;
   severance_offered: string;
   free_text: string;
 };
@@ -207,7 +224,7 @@ export default function ReportForm({ onSuccess }: Props) {
   const [form, setForm] = useState<FormState>({
     company: '', country: '', company_size: '', state: '',
     industry: '', job_function: '', job_title: '', seniority_level: '', layoff_month: '', layoff_year: '',
-    ai_tool_replaced: '', next_step: '', next_step_detail: '', severance_offered: '', free_text: '',
+    ai_tool_replaced: '', next_step: '', next_step_detail: '', next_step_industry: '', severance_offered: '', free_text: '',
   });
 
   const set = (key: keyof FormState, value: string) =>
@@ -240,6 +257,7 @@ export default function ReportForm({ onSuccess }: Props) {
       ai_tool_replaced: form.ai_tool_replaced || null,
       next_step: form.next_step || null,
       next_step_detail: form.next_step_detail || null,
+      next_step_industry: form.next_step_industry || null,
       severance_offered: form.severance_offered === 'true' ? true : form.severance_offered === 'false' ? false : null,
       free_text: form.free_text || null,
       people_count: 1,
@@ -489,20 +507,47 @@ export default function ReportForm({ onSuccess }: Props) {
                 </select>
               </div>
             </div>
-            {['reskilling', 'pivoted_industry', 'new_job_same_field'].includes(form.next_step) && (
+            {['reskilling', 'pivoted_industry', 'new_job_same_field', 'started_business', 'freelance'].includes(form.next_step) && (
               <div>
                 <label className={labelClass}>
                   {form.next_step === 'reskilling'
                     ? 'What are you learning / reskilling into?'
+                    : form.next_step === 'started_business'
+                    ? 'What kind of business?'
+                    : form.next_step === 'freelance'
+                    ? 'What kind of freelance work?'
                     : 'What role or field did you move to?'}
                 </label>
                 <input
                   type="text"
                   className={inputBase}
-                  placeholder="e.g. Data Science, UX Design, cybersecurity course"
+                  placeholder={
+                    form.next_step === 'started_business' ? 'e.g. consulting agency, e-commerce, media production'
+                    : form.next_step === 'freelance' ? 'e.g. copywriting, web development, design'
+                    : 'e.g. Data Science, UX Design, cybersecurity course'
+                  }
                   value={form.next_step_detail}
                   onChange={(e) => set('next_step_detail', e.target.value)}
                 />
+              </div>
+            )}
+            {['reskilling', 'pivoted_industry', 'started_business', 'freelance'].includes(form.next_step) && (
+              <div>
+                <label className={labelClass}>
+                  {form.next_step === 'pivoted_industry'
+                    ? 'What industry did you move to?'
+                    : form.next_step === 'reskilling'
+                    ? 'What industry are you targeting?'
+                    : 'What industry is it in?'}
+                </label>
+                <select
+                  className={inputBase}
+                  value={form.next_step_industry}
+                  onChange={(e) => set('next_step_industry', e.target.value)}
+                >
+                  <option value="">Select…</option>
+                  {NEXT_STEP_INDUSTRIES.map((i) => <option key={i} value={i}>{i}</option>)}
+                </select>
               </div>
             )}
           </div>

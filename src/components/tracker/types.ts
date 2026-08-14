@@ -37,6 +37,7 @@ export interface Report {
   people_count?: number;
   job_function?: string;
   seniority_level?: string | null;
+  next_step_industry?: string | null;
 }
 
 export const NEXT_STEP_LABELS: Record<NextStep, string> = {
