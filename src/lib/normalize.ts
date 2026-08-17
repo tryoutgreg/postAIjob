@@ -37,7 +37,7 @@ const ROLE_TAXONOMY: RoleCategory[] = [
       { label: 'Backend Developer', pattern: /back.?end|server.side|api dev/i },
       { label: 'Full-Stack Developer', pattern: /full.?stack/i },
       { label: 'Mobile Developer', pattern: /mobile|ios|android|react native|flutter|swift|kotlin/i },
-      { label: 'DevOps / SRE', pattern: /devops|sre|site reliab|infra(structure)? eng|platform eng/i },
+      { label: 'DevOps / SRE', pattern: /devops|sre|site reliab|infra(structure)? eng|platform eng|release manag/i },
       { label: 'QA / Test Engineer', pattern: /qa\b|quality assur|test(er|ing)?\b|sdet/i },
       { label: 'Embedded / Systems', pattern: /embedded|firmware|systems? eng/i },
       { label: 'Software Engineer', pattern: /software|engineer|dev(eloper)?|coding|programm|swe\b/i },
