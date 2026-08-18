@@ -19,13 +19,13 @@ const BAR_COLORS: Record<NormalizedNextStep, string> = {
   unknown: 'bg-gray-400',
 };
 
-const PILL_STYLES: Partial<Record<NormalizedNextStep, { bg: string; text: string; label: string }>> = {
-  freelance: { bg: 'bg-cyan-50 dark:bg-cyan-950/30', text: 'text-cyan-600 dark:text-cyan-400', label: 'Freelance' },
-  reskilling: { bg: 'bg-violet-50 dark:bg-violet-950/30', text: 'text-violet-600 dark:text-violet-400', label: 'Reskilling' },
-  pivoted_industry: { bg: 'bg-blue-50 dark:bg-blue-950/30', text: 'text-blue-600 dark:text-blue-400', label: 'Pivot' },
-  new_job_same_field: { bg: 'bg-emerald-50 dark:bg-emerald-950/30', text: 'text-emerald-600 dark:text-emerald-400', label: 'New job' },
-  started_business: { bg: 'bg-rose-50 dark:bg-rose-950/30', text: 'text-rose-600 dark:text-rose-400', label: 'Business' },
-  still_searching: { bg: 'bg-amber-50 dark:bg-amber-950/30', text: 'text-amber-600 dark:text-amber-400', label: 'Searching' },
+const LABEL_STYLES: Partial<Record<NormalizedNextStep, { color: string; border: string; label: string }>> = {
+  freelance: { color: 'text-cyan-600 dark:text-cyan-400', border: 'bg-cyan-400', label: 'Freelance' },
+  reskilling: { color: 'text-violet-600 dark:text-violet-400', border: 'bg-violet-400', label: 'Reskilling' },
+  pivoted_industry: { color: 'text-blue-600 dark:text-blue-400', border: 'bg-blue-400', label: 'Pivot' },
+  new_job_same_field: { color: 'text-emerald-600 dark:text-emerald-400', border: 'bg-emerald-400', label: 'New job' },
+  started_business: { color: 'text-rose-600 dark:text-rose-400', border: 'bg-rose-400', label: 'Business' },
+  still_searching: { color: 'text-amber-600 dark:text-amber-400', border: 'bg-amber-400', label: 'Searching' },
 };
 
 
@@ -108,16 +108,17 @@ export default function NextStepChart({ reports }: Props) {
             </div>
             <div className="divide-y divide-gray-100 dark:divide-gray-800">
               {transitions.slice(0, visibleCount).map((t, i) => {
-                const pill = PILL_STYLES[t.step];
+                const label = LABEL_STYLES[t.step];
                 return (
                   <div key={i} className={`text-sm py-3 ${i === 0 ? 'pt-0' : ''}`}>
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-bold text-gray-700 dark:text-gray-300">{t.from}</span>
                       <span className="text-gray-400 dark:text-gray-500 shrink-0 hidden sm:inline">→</span>
                       <span className="text-gray-600 dark:text-gray-400 hidden sm:inline">{t.to}</span>
-                      {pill && (
-                        <span className={`${pill.bg} ${pill.text} text-[11px] font-medium px-2.5 py-0.5 rounded-full shrink-0 ml-auto`}>
-                          {pill.label}
+                      {label && (
+                        <span className="flex items-center gap-2.5 shrink-0 ml-auto">
+                          <span className={`w-px h-3.5 ${label.border}`} />
+                          <span className={`${label.color} text-[11px] font-semibold uppercase tracking-wide`}>{label.label}</span>
                         </span>
                       )}
                     </div>

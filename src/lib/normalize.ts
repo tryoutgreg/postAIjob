@@ -30,8 +30,8 @@ interface RoleCategory {
 
 const ROLE_TAXONOMY: RoleCategory[] = [
   {
-    label: 'Software Engineering',
-    fallbackPattern: /software|engineer|dev(eloper)?|coding|programm|fullstack|full.stack|sre|devops|qa\b|tester|sdet/i,
+    label: 'IT & Infrastructure',
+    fallbackPattern: /software|engineer|dev(eloper)?|coding|programm|fullstack|full.stack|sre|devops|qa\b|tester|sdet|it (admin|support|manag)|sys(tem)? admin|network eng|cloud eng|security eng|infosec|cyber|release manag|azure|commercial.*(azure|cloud)/i,
     subs: [
       { label: 'Frontend Developer', pattern: /front.?end|react|angular|vue|css|html/i },
       { label: 'Backend Developer', pattern: /back.?end|server.side|api dev/i },
@@ -40,12 +40,17 @@ const ROLE_TAXONOMY: RoleCategory[] = [
       { label: 'DevOps / SRE', pattern: /devops|sre|site reliab|infra(structure)? eng|platform eng|release manag/i },
       { label: 'QA / Test Engineer', pattern: /qa\b|quality assur|test(er|ing)?\b|sdet/i },
       { label: 'Embedded / Systems', pattern: /embedded|firmware|systems? eng/i },
-      { label: 'Software Engineer', pattern: /software|engineer|dev(eloper)?|coding|programm|swe\b/i },
+      { label: 'System Administrator', pattern: /sys(tem)? admin/i },
+      { label: 'Network Engineer', pattern: /network eng/i },
+      { label: 'Cloud Engineer', pattern: /cloud|azure/i },
+      { label: 'Security Engineer', pattern: /secur|infosec|cyber/i },
+      { label: 'IT Support', pattern: /it (admin|support|manag|spec)/i },
+      { label: 'Software Engineer', pattern: /software|engineer|dev(eloper)?|coding|programm|swe\b|commercial/i },
     ],
   },
   {
     label: 'Data & Analytics',
-    fallbackPattern: /data (analy|scien|engineer)|analyst(?!.*(sale|market|business|financ))|analytics|\bbi\b|business intelligence/i,
+    fallbackPattern: /data (analy|scien|engineer)|\banalyst\b|analytics|\bbi\b|business intelligence/i,
     subs: [
       { label: 'Data Analyst', pattern: /data analyst/i },
       { label: 'Data Scientist', pattern: /data scien/i },
@@ -78,12 +83,13 @@ const ROLE_TAXONOMY: RoleCategory[] = [
     label: 'Design',
     fallbackPattern: /design|ux\b|ui\b|user experience|user interface|figma|graphic|creative|art director|illustrat|motion/i,
     subs: [
-      { label: 'UX Designer', pattern: /ux\b|user experience/i },
+      { label: 'UX Designer', pattern: /ux\b|user experience|content design/i },
       { label: 'UI Designer', pattern: /ui\b|user interface/i },
       { label: 'Product Designer', pattern: /product design/i },
       { label: 'Graphic Designer', pattern: /graphic design/i },
       { label: 'Motion / Video', pattern: /motion|video|animator/i },
       { label: 'Illustrator / Art Director', pattern: /illustrat|art director|creative director/i },
+      { label: 'Designer', pattern: /design/i },
     ],
   },
   {
@@ -109,7 +115,7 @@ const ROLE_TAXONOMY: RoleCategory[] = [
   },
   {
     label: 'Marketing',
-    fallbackPattern: /market|seo|sem\b|social media|digital market|brand|growth|performance market/i,
+    fallbackPattern: /market|seo|sem\b|social media|digital market|brand|growth|performance market|advertis/i,
     subs: [
       { label: 'Digital Marketing', pattern: /digital market/i },
       { label: 'SEO / SEM', pattern: /seo|sem\b|search engine/i },
@@ -134,7 +140,7 @@ const ROLE_TAXONOMY: RoleCategory[] = [
     fallbackPattern: /account(?!.*(exec|manag))|financ|banking|credit|tax|audit|bookkeep/i,
     subs: [
       { label: 'Accountant', pattern: /accountant|accounting/i },
-      { label: 'Financial Analyst', pattern: /financ/i },
+      { label: 'Financial Analyst', pattern: /financ|banking/i },
       { label: 'Auditor', pattern: /audit/i },
       { label: 'Tax Specialist', pattern: /tax/i },
       { label: 'Bookkeeper', pattern: /bookkeep/i },
@@ -177,17 +183,6 @@ const ROLE_TAXONOMY: RoleCategory[] = [
     ],
   },
   {
-    label: 'IT & Infrastructure',
-    fallbackPattern: /it (admin|support|manag)|sys(tem)? admin|network eng|cloud eng|security eng|infosec|cyber/i,
-    subs: [
-      { label: 'System Administrator', pattern: /sys(tem)? admin/i },
-      { label: 'Network Engineer', pattern: /network/i },
-      { label: 'Cloud Engineer', pattern: /cloud/i },
-      { label: 'Security Engineer', pattern: /secur|infosec|cyber/i },
-      { label: 'IT Support', pattern: /it (admin|support|manag|spec)/i },
-    ],
-  },
-  {
     label: 'Research & Science',
     fallbackPattern: /research sci|r&d|lab tech|researcher(?!.*(ai|ml|ux))/i,
     subs: [
@@ -216,8 +211,14 @@ export function classifyRole(raw: string | null | undefined): RoleClassification
   if (!raw || !raw.trim()) return { category: 'Other', subcategory: 'Other' };
   const s = raw.trim();
 
+  // Exclusion rules: prevent misclassification when a title matches multiple categories
+  const DATA_EXCLUDE = /financ|banking|seo|content|writer/i;
+
   for (const cat of ROLE_TAXONOMY) {
     if (cat.fallbackPattern.test(s)) {
+      // Skip Data & Analytics if title contains finance/banking/seo/content/writer keywords
+      if (cat.label === 'Data & Analytics' && DATA_EXCLUDE.test(s)) continue;
+
       for (const sub of cat.subs) {
         if (sub.pattern.test(s)) {
           return { category: cat.label, subcategory: sub.label };
