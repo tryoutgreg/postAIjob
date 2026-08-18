@@ -20,7 +20,7 @@ export default function PrivacyPage() {
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">
           Privacy Policy
         </h1>
-        <p className="text-sm text-gray-400 dark:text-gray-500 mb-12">Last updated: July 2026</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500 mb-12">Last updated: August 2026</p>
 
         <div className="prose prose-gray dark:prose-invert max-w-none space-y-10">
 
@@ -78,9 +78,25 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">5. Cookies and analytics</h2>
-            <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-              We may use basic analytics (e.g., page view counts) to understand site usage.
-              We do not use tracking cookies or build individual user profiles.
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-3">
+              We use the following tools to understand how people find and use this site:
+            </p>
+            <ul className="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
+              <li><strong>Google Analytics 4</strong> — sets cookies ({`_ga`}, {`_ga_*`}) to measure
+                traffic sources and page views. These cookies are only placed if you click
+                &quot;Accept cookies&quot; in our consent banner. If you decline, GA4 still collects
+                anonymous, cookieless data using Google&apos;s modeled estimates.</li>
+              <li><strong>Vercel Analytics &amp; Speed Insights</strong> — privacy-friendly,
+                cookieless analytics. No personal data is collected.</li>
+            </ul>
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed mt-3">
+              We do not sell or share analytics data with third parties. We do not build
+              individual user profiles. YouTube videos on this site are embedded using the
+              privacy-enhanced mode (youtube-nocookie.com) to minimize third-party tracking.
+            </p>
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed mt-3">
+              You can change your cookie preferences at any time by clearing your browser&apos;s
+              local storage for this site.
             </p>
           </section>
 
